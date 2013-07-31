@@ -4,6 +4,9 @@ package ru.kutu.osmf.advertisement {
 		
 		public var id:String;
 		public var url:String;
+		public var mediaType:String;
+		public var mimeType:String;
+		public var smoothing:Boolean = true;
 		public var isAdvertisement:Boolean = true;
 		public var hideScrubBarWhilePlayingAd:Boolean;
 		public var pauseMainMediaWhilePlayingAd:Boolean;

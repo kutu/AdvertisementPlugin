@@ -61,21 +61,19 @@ package ru.kutu.osmf.advertisement {
 			adContainer = new MediaContainer();
 			
 			// Set up the ad
-			var adMediaElement:MediaElement = mediaFactory.createMediaElement(new URLResource(vo.url));
+			var resource:URLResource = new URLResource(vo.url);
+			resource.mediaType = vo.mediaType;
+			resource.mimeType = vo.mimeType;
+			var adMediaElement:MediaElement = mediaFactory.createMediaElement(resource);
 			
 			// Set the layout metadata, if present
 			if (vo.layoutInfo != null) {
 				for (var key:String in vo.layoutInfo) {
 					adContainer.layoutMetadata[key] = vo.layoutInfo[key];
 				}
-//				if (!("index" in vo.layoutInfo)) {
-					// Make sure we add the last ad on top of any others
-//					adContainer.layoutMetadata.index = mediaContainer.numChildren;
-//				}
 			} else {
 				adContainer.layoutMetadata.percentWidth = 100;
 				adContainer.layoutMetadata.percentHeight = 100;
-//				adContainer.layoutMetadata.index = mediaContainer.numChildren;
 			}
 			
 			var layoutMetadata:LayoutMetadata = adMediaElement.getMetadata(LayoutMetadata.LAYOUT_NAMESPACE) as LayoutMetadata;
@@ -215,10 +213,10 @@ package ru.kutu.osmf.advertisement {
 				el = (el as ProxyElement).proxiedElement;
 			}
 			if (el is LightweightVideoElement) {
-				(el as LightweightVideoElement).smoothing = true;
+				(el as LightweightVideoElement).smoothing = vo.smoothing;
 			}
 			if (el is ImageElement) {
-				(el as ImageElement).smoothing = true;
+				(el as ImageElement).smoothing = vo.smoothing;
 			}
 		}
 		
