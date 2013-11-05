@@ -124,14 +124,6 @@ package ru.kutu.osmf.advertisement {
 		public function get isStarted():Boolean { return _isStarted }
 		
 		public function destroy():void {
-			if (_vo.pauseMainMediaWhilePlayingAd) {
-				// Add the main video back to the container.
-				mediaContainer.addMediaElement(mediaPlayer.media);
-				mediaContainer.validateNow();
-				
-				mediaPlayer.removeEventListener(PlayEvent.PLAY_STATE_CHANGE, onPlayStateChange);
-			}
-			
 			if (_vo.pauseMainMediaWhilePlayingAd && _vo.resumePlaybackAfterAd) {
 				// WORKAROUND: http://bugs.adobe.com/jira/browse/ST-397 - GPU Decoding issue on stagevideo: Win7, Flash Player version WIN 10,2,152,26 (debug)
 //				if (mediaPlayer.canSeek) {
@@ -143,9 +135,6 @@ package ru.kutu.osmf.advertisement {
 			}
 			
 			if (mediaPlayer) {
-				if (mediaPlayer.media) {
-					mediaPlayer.media.removeEventListener(ContainerChangeEvent.CONTAINER_CHANGE, onContainerChange);
-				}
 				mediaPlayer.removeEventListener(PlayEvent.PLAY_STATE_CHANGE, onPlayStateChange);
 			}
 			
@@ -235,15 +224,6 @@ package ru.kutu.osmf.advertisement {
 				
 				// keep main video stay in pause
 				mediaPlayer.addEventListener(PlayEvent.PLAY_STATE_CHANGE, onPlayStateChange);
-				
-				// If we are playing a linear ad, we need to remove it from the media container.
-				if (mediaContainer.containsMediaElement(mediaPlayer.media)) {
-					mediaContainer.removeMediaElement(mediaPlayer.media);
-				} else {
-					// Wait until the media gets added to the container, so that we can remove it
-					// immediately afterwards.
-					mediaPlayer.media.addEventListener(ContainerChangeEvent.CONTAINER_CHANGE, onContainerChange);
-				}
 			}
 			
 			if (!isNaN(_vo.autoCloseAfter) && _vo.autoCloseAfter > 0) {
@@ -270,13 +250,6 @@ package ru.kutu.osmf.advertisement {
 		private function onPlayStateChange(event:PlayEvent):void {
 			if (event.playState == PlayState.PLAYING) {
 				mediaPlayer.pause();
-			}
-		}
-		
-		private function onContainerChange(event:ContainerChangeEvent):void {
-			if (mediaContainer.containsMediaElement(mediaPlayer.media)) {
-				mediaPlayer.media.removeEventListener(ContainerChangeEvent.CONTAINER_CHANGE, onContainerChange);
-				mediaContainer.removeMediaElement(mediaPlayer.media);
 			}
 		}
 		
